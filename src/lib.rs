@@ -1,6 +1,5 @@
 pub struct BinaryHeap {
-    heap: Vec<i32>,
-    size: usize
+    heap: Vec<i32>
 }
 
 impl BinaryHeap {
@@ -11,8 +10,7 @@ impl BinaryHeap {
 
     pub fn add(&mut self, key : i32) {
         self.heap.push(key);
-        self.size = self.size + 1;
-        let last = self.size - 1;
+        let last = self.heap.len() - 1;
         self.percolate_up(last);
     }
 
@@ -20,8 +18,7 @@ impl BinaryHeap {
         match self.heap.pop() {
             None    => None,
             Some(x) => {
-                self.size = self.size - 1;
-                return if self.size > 0 {
+                return if !self.heap.is_empty() {
                     let temp = self.heap[0];
                     self.heap[0] = x;
                     self.percolate_down(0);
@@ -34,7 +31,7 @@ impl BinaryHeap {
     }
 
     pub fn build_heap(&mut self) {
-        for i in (0..(self.size / 2)).rev() {
+        for i in (0..(self.heap.len() / 2)).rev() {
             self.percolate_down(i);
         }
     }
@@ -59,8 +56,8 @@ impl BinaryHeap {
 
         let left = self.left(index);
         let right = self.right(index);
-        let mut m = if left < self.size && self.heap[index] < self.heap[left] { left } else { index };
-        m = if right < self.size && self.heap[m] < self.heap[right] { right } else { m };
+        let mut m = if left < self.heap.len() && self.heap[index] < self.heap[left] { left } else { index };
+        m = if right < self.heap.len() && self.heap[m] < self.heap[right] { right } else { m };
 
         if m != index {
             let temp = self.heap[index];
@@ -87,8 +84,7 @@ impl BinaryHeap {
 
 pub fn build_heap(keys : &[i32]) -> BinaryHeap {
     let mut b_heap = BinaryHeap {
-        heap : keys.to_vec(),
-        size : keys.len()
+        heap : keys.to_vec()
     };
     b_heap.build_heap();
     return b_heap;
