@@ -10,7 +10,10 @@ impl BinaryHeap {
     }
 
     pub fn add(&mut self, key : i32) {
-        // todo
+        self.heap.push(key);
+        self.size = self.size + 1;
+        let last = self.size - 1;
+        self.percolate_up(last);
     }
 
     pub fn remove(&mut self) -> Option<i32> {
@@ -44,8 +47,12 @@ impl BinaryHeap {
         return self.left(i) + 1;
     }
 
-    fn parent(&self, i : usize) -> usize {
-        return (i - 1) / 2;
+    fn parent(&self, i : usize) -> Option<usize> {
+        return if i > 0 {
+            Some((i - 1) / 2)
+        } else {
+            None
+        }
     }
 
     fn percolate_down(&mut self, index : usize) {
@@ -61,11 +68,19 @@ impl BinaryHeap {
             self.heap[m] = temp;
             self.percolate_down(m);
         }
-        
+
     }
 
     fn percolate_up(&mut self, index : usize) {
-        // todo
+        let opt_parent = self.parent(index);
+        if let Some(parent) = opt_parent {
+            if index > 0 && self.heap[parent] < self.heap[index] {
+                let temp = self.heap[parent];
+                self.heap[parent] = self.heap[index];
+                self.heap[index] = temp;
+                self.percolate_up(parent);
+            }
+        }
     }
 
 }
@@ -109,6 +124,31 @@ mod tests {
         let mut heap = build_heap(&[]);
         assert_eq!(heap.remove(), None);
         assert_eq!(heap.count(), 0);
+    }
+
+    #[test]
+    fn test_add() {
+        // Test 1
+        let mut heap = build_heap(&[]);
+        heap.add(3);
+        assert_eq!(heap.count(), 1);
+        assert_eq!(heap.remove(), Some(3));
+        heap.add(-1);
+        heap.add(5);
+        assert_eq!(heap.count(), 2);
+        assert_eq!(heap.remove(), Some(5));
+        assert_eq!(heap.remove(), Some(-1));
+        assert_eq!(heap.remove(), None);
+        assert_eq!(heap.count(), 0);
+        // Test 2
+        let mut heap = build_heap(&[3, -1, 0, 10]);
+        heap.add(9);
+        heap.add(13);
+        assert_eq!(heap.count(), 6);
+        assert_eq!(heap.remove(), Some(13));
+        assert_eq!(heap.remove(), Some(10));
+        assert_eq!(heap.remove(), Some(9));
+        assert_eq!(heap.count(), 3);
     }
 
 }
