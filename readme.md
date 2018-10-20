@@ -2,7 +2,7 @@
 
 This repository contains a simple implementation of the binary heap structure in Rust.
 
-# Example
+## Example
 
 ```rust
 let mut heap = build_heap(&[-1, 6, 9, 0]);
